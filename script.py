@@ -22,7 +22,14 @@ us_census[['Men', 'Women']] = us_census['GenderPop'].str.split('_', expand=True)
 # Convert each values to a number
 us_census['Men'] = us_census['Men'].replace('M', '', regex = True)
 us_census['Men'] = us_census['Men'].fillna(0)
-pd.to_numeric(us_census['Men'])
+temp = pd.to_numeric(us_census['Men'])
+us_census['Men'] = temp
 us_census['Women'] = us_census['Women'].replace('F', '', regex = True)
-us_census['Women'] = us_census['Women'].fillna(0)
-pd.to_numeric(us_census['Women'])
+us_census['Women'] = us_census['Women'].fillna(us_census['TotalPop'] - us_census['Men'])
+temp = pd.to_numeric(us_census['Women'])
+us_census['Women'] = temp
+us_census.drop_duplicates()
+
+# Create women vs. income scatterplot
+plt.scatter(us_census['Women'], us_census['Income'])
+plt.show()
